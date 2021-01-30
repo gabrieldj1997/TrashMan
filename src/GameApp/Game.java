@@ -1,4 +1,4 @@
-package gameApp;
+package GameApp;
 
 import Player.*;
 import java.applet.Applet;
@@ -47,9 +47,10 @@ public class Game extends JFrame {
     private boolean jogando;
     private boolean controles;
     private boolean pausar;
-    private URL som;
-    private AudioClip musicaMenu;
-    private AudioClip musicaJogo;
+    private URL somTopGear = Game.class.getResource("topGear.wav");
+    private AudioClip musicaMenu = Applet.newAudioClip(somTopGear);
+    private URL somMegaMan = getClass().getResource("megaMan.wav");
+    private AudioClip musicaJogo = Applet.newAudioClip(somMegaMan);
 
     protected Game() {
         componentes();
@@ -67,6 +68,17 @@ public class Game extends JFrame {
         setLocationRelativeTo(null);
         setResizable(false);
         setVisible(true);
+    }
+    
+    public void musica(boolean status) {
+
+        if (status) {
+            musicaMenu.stop();
+            musicaJogo.loop();
+        } else {
+            musicaMenu.loop();
+            musicaJogo.stop();
+        }
     }
 
     private class NovoLixo implements ActionListener {
@@ -126,8 +138,7 @@ public class Game extends JFrame {
                         gari.setX(285);
                         gari.setY(500);
                         vidas = 10;
-                        musicaMenu.stop();
-                        musicaJogo.loop();
+                        musica(true);
                     }else if(gameOver){
                         gameOver = false;
                         inicio = true;
@@ -138,8 +149,7 @@ public class Game extends JFrame {
                                 + "Tiago\n"
                                 + "Iskren\n"
                                 + "Thiago");
-                        musicaJogo.stop();
-                        musicaMenu.loop();
+                        musica(false);
                     }
                 }
                 if (codigo == KeyEvent.VK_Z 
@@ -223,11 +233,6 @@ public class Game extends JFrame {
         referencia = new ImageIcon("src/res/wallpaper2.png");
         telaPrincipal = referencia.getImage();
         referencia = new ImageIcon("src/res/controles.png");
-        telaControle = referencia.getImage();
-        som = Game.class.getResource("topGear.wav");
-        musicaMenu= Applet.newAudioClip(som);
-        som = getClass().getResource("megaMan.wav");
-        musicaJogo = Applet.newAudioClip(som);
         vidasExtras = 0;
         velocidade = 1;
         gameOver = false;
@@ -242,7 +247,7 @@ public class Game extends JFrame {
         novoLixo = new Timer(1000, new NovoLixo());
         timer = new Timer(5, new Listener());
         timer.start();
-        musicaMenu.loop();
+        musica(false);
     }
 
     private void colisaoLixo() {
@@ -301,8 +306,7 @@ public class Game extends JFrame {
                 jogando = false;
                 fase.repaint();
                 novoLixo.stop();
-                musicaJogo.stop();
-                musicaMenu.loop();
+                // musica(false); // Loop infinito da musica 
             }
             switch (vidasExtras) {
                 case 0:
